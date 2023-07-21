@@ -1,0 +1,30 @@
+{
+  "name": "breadbot",
+  "version": "0.0.1",
+  "description": "ACM Discord bot",
+  "main": "src/index.ts",
+  "repository": "https://github.com/acmucsd/breadbot.git",
+  "author": "Stuart6557 <vivianliu532@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/src/index.js",
+    "lint": "eslint ./ --ext .ts",
+    "dev": "tsc && node build/src/index.js",
+    "hot": "nodemon -e ts --exec \"yarn dev\"",
+    "lint:fix": "eslint ./ --ext .ts --fix"
+  },
+  "dependencies": {
+    "@discordjs/core": "^0.6.0",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.3.1",
+    "luxon": "^3.3.0",
+    "reflect-metadata": "^0.1.13",
+    "typedi": "^0.10.0",
+    "winston": "^3.9.0",
+    "winston-daily-rotate-file": "^4.7.1"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.3.0"
+  }
+}
