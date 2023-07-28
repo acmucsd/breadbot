@@ -1,4 +1,3 @@
-import Logger from '../utils/Logger';
 import { BotClient, BotEvent } from '../types';
 
 /**
@@ -22,11 +21,6 @@ export default class Ready implements BotEvent {
     if (this.client.user) {
       // ...log that we're up! This marks log beginnings as well.
       console.log(`${this.client.user.username} now ready!`);
-      // Logger.info(`${this.client.user.username} now ready!`, {
-      //   eventType: 'ready',
-      // });
-      // Set our Rich Presence data.
-      await this.client.user.setPresence(this.client.settings.presence);
     }
   }
 }

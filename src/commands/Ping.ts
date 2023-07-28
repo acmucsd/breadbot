@@ -5,7 +5,6 @@ import { BotClient } from '../types';
 
 /**
  * Pings the user.
- * Copied verbatim from BreadBot.
  *
  * Test Command left from the boilerplate.
  */

@@ -1,12 +1,11 @@
 import { Collection } from 'discord.js';
 import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
 import { Service } from 'typedi';
 import { join } from 'path';
 import { readdir, statSync } from 'fs';
-import { Routes } from 'discord-api-types/v9';
 import { BotClient } from '../types';
 import Command from '../Command';
-// import Logger from '../utils/Logger';
 
 /**
  * ActionManager dynamically manages all of the respective Commands and Events
@@ -71,13 +70,10 @@ export default class {
       });
 
       // Now we upload the Slash Command registration payload to Discord.
-      const restAPI = new REST({ version: '9' }).setToken(client.settings.token);
+      const restAPI = new REST({ version: '10' }).setToken(client.settings.token);
 
       (async () => {
         console.log('Loading Slash Commands on Discord Gateway...');
-        // Logger.info('Loading Slash Commands on Discord Gateway...', {
-        //   eventType: 'slashCommandLoading',
-        // });
         await restAPI.put(
           Routes.applicationCommands(client.settings.clientID),
           { body: slashCommands }, 
@@ -88,9 +84,6 @@ export default class {
           { body: slashCommands },
         );
         console.log('Loaded Slash Commands on Discord Gateway!');
-        // Logger.info('Loaded Slash Commands on Discord Gateway!', {
-        //   eventType: 'slashCommandLoaded',
-        // });
       })();
     });
   }

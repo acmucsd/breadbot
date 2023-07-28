@@ -11,13 +11,9 @@ import {
   InteractionReplyOptions,
 } from 'discord.js';
 import Command from '../Command';
-// import GoogleCalendarManager from '../managers/GoogleCalendarManager';
-// import NotionEventSyncManager from '../managers/NotionEventSyncManager';
-import Logger from '../utils/Logger';
 
 /**
  * The options for a Command.
- * Copied verbatim from BreadBot.
  *
  * Each command has specific flags and parameters used by the Client to understand execution.
  */
@@ -26,6 +22,7 @@ export interface CommandOptions {
    * The name of the Command. This translates to what will be used to call the Command.
    */
   name: string;
+
   /**
    * Whether the Command is enabled or not.
    *
@@ -33,6 +30,7 @@ export interface CommandOptions {
    * This option can only be modified before starting the Client.
    */
   enabled: boolean;
+
   /**
    * Whether the "Board" role is required when running this Command.
    *
@@ -40,10 +38,12 @@ export interface CommandOptions {
    * unable to. The incident will be logged as well.
    */
   boardRequired?: boolean;
+
   /**
    * A brief description of what the Command does.
    */
   description?: string;
+
   /**
    * Example usage of the Command.
    *
@@ -61,7 +61,7 @@ export interface CommandOptions {
    * but there are too few Commands right now.
    */
   category?: string;
-
+  
   /**
    * Required permissions to run the Command.
    *
@@ -127,9 +127,6 @@ export interface BotClient extends Client {
    * for other commands, like Help.
    */
   commands: Collection<string, Command>;
-
-  // notionEventSyncManager: NotionEventSyncManager;
-  // googleCalendarManager: GoogleCalendarManager;
 }
 
 /**
@@ -139,10 +136,7 @@ export interface BotClient extends Client {
 export class BotInitializationError extends Error {
   constructor(missingEnvVar: string) {
     super(`Could not construct Client class: missing ${missingEnvVar} in envvars`);
-    Logger.error(`Could not construct Client class: missing ${missingEnvVar} in envvars`, {
-      eventType: 'initError',
-      error: `missing ${missingEnvVar} in envvars`,
-    });
+    console.log(`Could not construct Client class: missing ${missingEnvVar} in envvars`);
 
     // Set the prototype explicitly.
     Object.setPrototypeOf(this, BotInitializationError.prototype);
