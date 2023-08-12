@@ -99,7 +99,12 @@ export interface BotSettings {
    * The Discord API bot token. Needed to authenticate the bot.
    */
   token: string;
+
+  /**
+   * What the message content must contain initially to have a command invoked.
+   */
   prefix: string;
+
   paths: {
     commands: string;
     events: string;

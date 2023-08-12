@@ -27,17 +27,48 @@ export default class {
    * @param {BotClient} client The original client, for access to the configuration.
    * @returns {Collection<string, Command>} A dictionary of every command in a [name, object] pair
    */
-  public initializeCommands(client: BotClient): void {
+  public async initializeCommands(client: BotClient): Promise<void> {
     // Get our commands directory from the settings.
     const { commands } = client.settings.paths;
 
-    // Instantiate an array to hold all the information necessary to register Slash Commands
-    // on Discord's API. Due to how finnicky Discord's API is, this has to be untyped.
+    // An array to hold all the information necessary to register Slash Commands on Discord's API.
+    const slashCommands = await this.loadCommands(client, commands);
+
+    // Now we upload the Slash Command registration payload to Discord.
+    const restAPI = new REST({ version: '10' }).setToken(client.settings.token);
+
+    (async () => {
+      console.log('Loading Slash Commands on Discord Gateway...');
+      await restAPI.put(
+        Routes.applicationCommands(client.settings.clientID),
+        { body: slashCommands }, 
+      );
+      // Adding the ID for our Discord Guild allows new slash commands to load faster than adding it globally.
+      await restAPI.put(
+        Routes.applicationGuildCommands(client.settings.clientID, client.settings.discordGuildID),
+        { body: slashCommands },
+      );
+      console.log('Loaded Slash Commands on Discord Gateway!');
+    })();
+  }
+  
+  /**
+   * @param {BotClient} client The original client, for access to the configuration.
+   * @param {string} commands The commands directory.
+   */
+  private async loadCommands(client: BotClient, commands: string): Promise<any[]> {
+    console.log(`Loading from ${commands}`);
+
+    // Instantiate an array to store information on Slash Commands.
+    // Due to how finnicky Discord's API is, this has to be untyped.
     const slashCommands: any[] = [];
+    // NOTE: This nesting stuff isn't working. Because the files.forEach part is async, 
+    // line 109 runs before line 80, so the nested commands aren't being loaded.
+    let nestedCommands;
+    let nesting: boolean = false;
 
     // Go through every file in that directory.
     readdir(commands, (err, files) => {
-      // if (err) Logger.error(err);
       if (err) console.log(err);
 
       // For every Command file...
@@ -46,8 +77,12 @@ export default class {
         if (statSync(join(commands, cmd)).isDirectory()) {
           // Recursively deal with that, since we may want to split commands by module
           // folder in the future.
-          this.initializeCommands(client);
+          nesting = true;
+          nestedCommands = await this.loadCommands(client, join(commands, cmd));
+          console.log(nesting + " nesting in " + commands);
         } else {
+          console.log("currently on " + cmd);
+
           // Import our Command file.
           const commandImport = await import(join(
             __dirname,
@@ -68,24 +103,14 @@ export default class {
           }
         }
       });
-
-      // Now we upload the Slash Command registration payload to Discord.
-      const restAPI = new REST({ version: '10' }).setToken(client.settings.token);
-
-      (async () => {
-        console.log('Loading Slash Commands on Discord Gateway...');
-        await restAPI.put(
-          Routes.applicationCommands(client.settings.clientID),
-          { body: slashCommands }, 
-        );
-        // Adding the ID for our Discord Guild allows new slash commands to load faster than adding it globally.
-        await restAPI.put(
-          Routes.applicationGuildCommands(client.settings.clientID, client.settings.discordGuildID),
-          { body: slashCommands },
-        );
-        console.log('Loaded Slash Commands on Discord Gateway!');
-      })();
     });
+
+    console.log(`Loaded from ${commands}...`);
+    console.log(nesting + " nesting here in " + commands);
+    if (nesting) {
+      return slashCommands.concat(nestedCommands);
+    }
+    return slashCommands;
   }
 
   /**
@@ -98,7 +123,6 @@ export default class {
 
     // Go through every file in that directory.
     readdir(events, (err, files) => {
-      // if (err) Logger.error(err);
       if (err) console.log(err);
 
       // For every Event file...
