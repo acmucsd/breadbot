@@ -3,7 +3,7 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { Service } from 'typedi';
 import { join } from 'path';
-import { readdir, statSync } from 'fs';
+import { readdir, readdirSync, statSync } from 'fs';
 import { BotClient } from '../types';
 import Command from '../Command';
 
@@ -32,6 +32,7 @@ export default class {
 
     // An array to hold all the information necessary to register Slash Commands on Discord's API.
     const slashCommands = await this.loadCommands(client, commands);
+    console.log(slashCommands);
 
     // Now we upload the Slash Command registration payload to Discord.
     const restAPI = new REST({ version: '10' }).setToken(client.settings.token);
@@ -58,31 +59,21 @@ export default class {
    * Commands on Discord's API. Due to how finnicky Discord's API is, this has to be untyped.
    */
   private async loadCommands(client: BotClient, commands: string): Promise<any[]> {
-    console.log(`Loading from ${commands}`);
-
     // Instantiate the array to be returned
     const slashCommands: any[] = [];
-    // NOTE: This nesting stuff isn't working. Because the files.forEach part is async, 
-    // line 109 runs before line 80, so the nested commands aren't being loaded.
     let nestedCommands;
     let nesting: boolean = false;
 
-    // Go through every file in that directory.
-    readdir(commands, (err, files) => {
-      if (err) console.log(err);
-
-      // For every Command file...
-      files.forEach(async (cmd) => {
+    const files = readdirSync(commands);
+    // For every Command file...
+    await Promise.all(files.map(async (cmd) => {
         // Check if it is a directory, because if it is...
         if (statSync(join(commands, cmd)).isDirectory()) {
           // Recursively deal with that, since we may want to split commands by module
           // folder in the future.
           nesting = true;
           nestedCommands = await this.loadCommands(client, join(commands, cmd));
-          console.log(nesting + " nesting in " + commands);
         } else {
-          console.log("currently on " + cmd);
-
           // Import our Command file.
           const commandImport = await import(join(
             __dirname,
@@ -102,11 +93,9 @@ export default class {
             slashCommands.push(command.definition.toJSON());
           }
         }
-      });
-    });
+    }));
 
     console.log(`Loaded from ${commands}...`);
-    console.log(nesting + " nesting here in " + commands);
     if (nesting) {
       return slashCommands.concat(nestedCommands);
     }
