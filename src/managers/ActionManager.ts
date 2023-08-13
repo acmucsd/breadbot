@@ -25,7 +25,6 @@ export default class {
   /**
    * Parses files into commands from the configured command path.
    * @param {BotClient} client The original client, for access to the configuration.
-   * @returns {Collection<string, Command>} A dictionary of every command in a [name, object] pair
    */
   public async initializeCommands(client: BotClient): Promise<void> {
     // Get our commands directory from the settings.
@@ -55,12 +54,13 @@ export default class {
   /**
    * @param {BotClient} client The original client, for access to the configuration.
    * @param {string} commands The commands directory.
+   * @returns {Promise<any[]>} An array that holds all the information necessary to register Slash
+   * Commands on Discord's API. Due to how finnicky Discord's API is, this has to be untyped.
    */
   private async loadCommands(client: BotClient, commands: string): Promise<any[]> {
     console.log(`Loading from ${commands}`);
 
-    // Instantiate an array to store information on Slash Commands.
-    // Due to how finnicky Discord's API is, this has to be untyped.
+    // Instantiate the array to be returned
     const slashCommands: any[] = [];
     // NOTE: This nesting stuff isn't working. Because the files.forEach part is async, 
     // line 109 runs before line 80, so the nested commands aren't being loaded.
