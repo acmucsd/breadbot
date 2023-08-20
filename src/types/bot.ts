@@ -11,6 +11,7 @@ import {
   InteractionReplyOptions,
 } from 'discord.js';
 import Command from '../Command';
+import Logger from '../utils/Logger';
 
 /**
  * The options for a Command.
@@ -141,7 +142,10 @@ export interface BotClient extends Client {
 export class BotInitializationError extends Error {
   constructor(missingEnvVar: string) {
     super(`Could not construct Client class: missing ${missingEnvVar} in envvars`);
-    console.log(`Could not construct Client class: missing ${missingEnvVar} in envvars`);
+    Logger.error(`Could not construct Client class: missing ${missingEnvVar} in envvars`, {
+      eventType: 'initError',
+      error: `missing ${missingEnvVar} in envvars`,
+    });
 
     // Set the prototype explicitly.
     Object.setPrototypeOf(this, BotInitializationError.prototype);

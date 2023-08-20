@@ -1,3 +1,4 @@
+import Logger from '../utils/Logger';
 import { BotClient, BotEvent } from '../types';
 
 /**
@@ -20,7 +21,9 @@ export default class Ready implements BotEvent {
     // If we're finally logged in...
     if (this.client.user) {
       // ...log that we're up! This marks log beginnings as well.
-      console.log(`${this.client.user.username} now ready!`);
+      Logger.info(`${this.client.user.username} now ready!`, {
+        eventType: 'ready',
+      });
     }
   }
 }

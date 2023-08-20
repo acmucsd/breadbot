@@ -6,6 +6,7 @@ import { join } from 'path';
 import { readdir, readdirSync, statSync } from 'fs';
 import { BotClient } from '../types';
 import Command from '../Command';
+import Logger from '../utils/Logger';
 
 /**
  * ActionManager dynamically manages all of the respective Commands and Events
@@ -83,7 +84,9 @@ export default class {
     const restAPI = new REST({ version: '10' }).setToken(client.settings.token);
 
     (async () => {
-      console.log('Loading Slash Commands on Discord Gateway...');
+      Logger.info('Loading Slash Commands on Discord Gateway...', {
+        eventType: 'slashCommandLoading',
+      });
       // Make an API call for global application commands. This will allow the commands 
       // to be available across all the guilds where this bot is present.
       await restAPI.put(
@@ -96,7 +99,9 @@ export default class {
         Routes.applicationGuildCommands(client.settings.clientID, client.settings.discordGuildID),
         { body: slashCommands },
       );
-      console.log('Loaded Slash Commands on Discord Gateway!');
+      Logger.info('Loaded Slash Commands on Discord Gateway!', {
+        eventType: 'slashCommandLoaded',
+      });
     })();
   }
   
@@ -110,7 +115,7 @@ export default class {
 
     // Go through every file in that directory.
     readdir(events, (err, files) => {
-      if (err) console.log(err);
+      if (err) Logger.error(err);
 
       // For every Event file...
       files.forEach(async (evt) => {

@@ -1,5 +1,6 @@
 import { Collection, Client as DiscordClient, GatewayIntentBits } from 'discord.js';
 import { Service } from 'typedi';
+import Logger from './utils/Logger';
 import { BotSettings, BotClient, BotInitializationError } from './types';
 import Command from './Command';
 import ActionManager from './managers/ActionManager';
@@ -88,7 +89,7 @@ export default class Client extends DiscordClient implements BotClient {
       ActionManager.initializeEvents(this);
       await this.login(configuration.token);
     } catch (e) {
-      console.log(`Could not initialize bot: ${e}`);
+      Logger.error(`Could not initialize bot: ${e}`);
     }
   }
 
