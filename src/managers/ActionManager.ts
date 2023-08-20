@@ -1,4 +1,4 @@
-import { Collection } from 'discord.js';
+import { Collection, RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { Service } from 'typedi';
@@ -23,39 +23,17 @@ export default class {
   public commands: Collection<string, Command> = new Collection<string, Command>();
 
   /**
-   * Parses files into commands from the configured command path.
-   * @param {BotClient} client The original client, for access to the configuration.
-   */
-  public async initializeCommands(client: BotClient): Promise<void> {
-    // Get our commands directory from the settings.
-    const { commands } = client.settings.paths;
-
-    // An array to hold all the information necessary to register Slash Commands on Discord's API.
-    const slashCommands: any[] = [];
-    await this.loadCommands(client, commands, slashCommands);
-    console.log(slashCommands);
-
-    // Now we upload the Slash Command registration payload to Discord.
-    const restAPI = new REST({ version: '10' }).setToken(client.settings.token);
-
-    (async () => {
-      console.log('Loading Slash Commands on Discord Gateway...');
-      // Adding the ID for our Discord Guild allows new slash commands to load faster than adding it globally.
-      await restAPI.put(
-        Routes.applicationGuildCommands(client.settings.clientID, client.settings.discordGuildID),
-        { body: slashCommands },
-      );
-      console.log('Loaded Slash Commands on Discord Gateway!');
-    })();
-  }
-  
-  /**
    * @param {BotClient} client The original client, for access to the configuration.
    * @param {string} commands The commands directory.
-   * @param {any[]} slashCommands An array that holds all the information necessary to register
-   * Slash Commands on Discord's API. Due to how finnicky Discord's API is, this has to be untyped.
+   * @returns {RESTPostAPIChatInputApplicationCommandsJSONBody[]} An array that holds 
+   * all the information necessary to register Slash Commands on Discord's API.
    */
-  private async loadCommands(client: BotClient, commands: string, slashCommands: any[]): Promise<void> {
+  private async loadCommands(
+    client: BotClient, 
+    commands: string
+  ): Promise<RESTPostAPIChatInputApplicationCommandsJSONBody[]> {
+    let slashCommands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+
     const files = readdirSync(commands);
     // For every Command file...
     await Promise.all(files.map(async (cmd) => {
@@ -63,7 +41,8 @@ export default class {
         if (statSync(join(commands, cmd)).isDirectory()) {
           // Recursively deal with that, since we may want to split commands by module
           // folder in the future.
-          await this.loadCommands(client, join(commands, cmd), slashCommands);
+          const nestedCommands = await this.loadCommands(client, join(commands, cmd));
+          slashCommands = slashCommands.concat(nestedCommands);
         } else {
           // Import our Command file.
           const commandImport = await import(join(
@@ -86,9 +65,41 @@ export default class {
         }
     }));
 
-    console.log(`Loaded from ${commands}...`);
+    return slashCommands;
   }
 
+  /**
+   * Parses files into commands from the configured command path.
+   * @param {BotClient} client The original client, for access to the configuration.
+   */
+  public async initializeCommands(client: BotClient): Promise<void> {
+    // Get our commands directory from the settings.
+    const { commands } = client.settings.paths;
+
+    // An array to hold all the information necessary to register Slash Commands on Discord's API.
+    const slashCommands = await this.loadCommands(client, commands);
+
+    // Now we upload the Slash Command registration payload to Discord.
+    const restAPI = new REST({ version: '10' }).setToken(client.settings.token);
+
+    (async () => {
+      console.log('Loading Slash Commands on Discord Gateway...');
+      // Make an API call for global application commands. This will allow the commands 
+      // to be available across all the guilds where this bot is present.
+      await restAPI.put(
+        Routes.applicationCommands(client.settings.clientID),
+        { body: slashCommands }, 
+      );
+      // Adding the ID for our Discord Guild allows new slash commands to load faster 
+      // in our specified guild than adding it globally.
+      await restAPI.put(
+        Routes.applicationGuildCommands(client.settings.clientID, client.settings.discordGuildID),
+        { body: slashCommands },
+      );
+      console.log('Loaded Slash Commands on Discord Gateway!');
+    })();
+  }
+  
   /**
    * Initializes every event from the configured event path.
    * @param {BotClient} client The original client, for access to the configuration.
