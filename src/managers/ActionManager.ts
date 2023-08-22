@@ -1,4 +1,4 @@
-import { Collection, RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord.js';
+import { Collection, RESTPostAPIChatInputApplicationCommandsJSONBody as APICommandJSON } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { Service } from 'typedi';
@@ -26,14 +26,11 @@ export default class {
   /**
    * @param {BotClient} client The original client, for access to the configuration.
    * @param {string} commands The commands directory.
-   * @returns {RESTPostAPIChatInputApplicationCommandsJSONBody[]} An array that holds 
-   * all the information necessary to register Slash Commands on Discord's API.
+   * @returns {APICommandJSON[]} An array that holds all the information necessary 
+   * to register Slash Commands on Discord's API.
    */
-  private async loadCommands(
-    client: BotClient, 
-    commands: string
-  ): Promise<RESTPostAPIChatInputApplicationCommandsJSONBody[]> {
-    let slashCommands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+  private async loadCommands(client: BotClient, commands: string): Promise<APICommandJSON[]> {
+    let slashCommands: APICommandJSON[] = [];
 
     const files = readdirSync(commands);
     // For every Command file...
