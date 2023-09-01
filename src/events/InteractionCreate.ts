@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CommandInteraction } from 'discord.js';
-// import Logger from '../utils/Logger';
+import Logger from '../utils/Logger';
 import { BotEvent, BotClient } from '../types';
 
 /**
@@ -21,7 +21,6 @@ export default class InteractionCreate implements BotEvent {
 
   public async run(args: any): Promise<void> {
     // We want to get out if this is not a Slash Command.
-    // We'll replace this later.
     if (!args.isCommand()) {
       return;
     }
@@ -38,35 +37,32 @@ export default class InteractionCreate implements BotEvent {
     }
 
     if (!interaction.member) {
-      console.log(`Slash Command ${command} received, but interaction author is null!`);
-      // Logger.error(`Slash Command ${command} received, but interaction author is null!`, {
-      //   eventType: 'nullSlashCommandUser',
-      //   command,
-      // });
+      Logger.error(`Slash Command ${command} received, but interaction author is null!`, {
+        eventType: 'nullSlashCommandUser',
+        command,
+      });
       return;
     }
 
     const user = this.client.users.cache.get(interaction.member.user.id);
 
     if (!user) {
-      console.log(`Slash Command ${command} received, but interaction member cannot be found!`);
-      // Logger.error(`Slash Command ${command} received, but interaction member cannot be found!`, {
-      //   eventType: 'undefinedSlashCommandUser',
-      //   command,
-      // });
+      Logger.error(`Slash Command ${command} received, but interaction member cannot be found!`, {
+        eventType: 'undefinedSlashCommandUser',
+        command,
+      });
       return;
     }
 
     await user.fetch();
 
     // Log usage of command.
-    console.log(`Slash Command '${interaction.commandName}' received from ${user.username} (ID: ${user.id}).`);
-    // Logger.info(`Slash Command '${interaction.commandName}' received from ${user.username} (ID: ${user.id}).`, {
-    //   eventType: 'slashCommand',
-    //   command,
-    //   author: user,
-    // });
-
+    Logger.info(`Slash Command '${interaction.commandName}' received from ${user.username} (ID: ${user.id}).`, {
+      eventType: 'slashCommand',
+      command,
+      author: user,
+    });
+    
     if (!command.canRun(interaction)) {
       return;
     }

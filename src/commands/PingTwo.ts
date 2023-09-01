@@ -8,23 +8,23 @@ import { BotClient } from '../types';
  *
  * Test Command left from the boilerplate.
  */
-export default class Ping extends Command {
+export default class PingTwo extends Command {
   constructor(client: BotClient) {
     const definition = new SlashCommandBuilder()
-      .setName('ping')
+      .setName('pingtwo')
       .setDescription('Pings the bot.');
 
     super(client, {
-      name: 'ping',
+      name: 'pingtwo',
       enabled: true,
       description: 'Pings the bot.',
       category: 'Information',
-      usage: client.settings.prefix.concat('ping'),
+      usage: client.settings.prefix.concat('pingtwo'),
       requiredPermissions: ['SendMessages'],
     }, definition);
   }
 
   public async run(interaction: CommandInteraction): Promise<void> {
-    await super.respond(interaction, 'Pong!');
+    await super.respond(interaction, 'Pong 2!');
   }
 }

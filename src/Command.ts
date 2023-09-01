@@ -6,7 +6,7 @@ import {
 import {
   BotClient, CommandOptions, InteractionPayload,
 } from './types';
-// import Logger from './utils/Logger';
+import Logger from './utils/Logger';
 
 /**
  * Abstract class representing a Command in BreadBot.
@@ -78,12 +78,11 @@ export default abstract class Command {
       interaction.reply(
         'You must be a Board member to use this command!',
       ).then(() => {
-        console.log(`Member ${interaction.member?.toString()} attempted to use a Board command without permission!`);
-        // Logger.warn(`Member ${interaction.member?.toString()} attempted to use a Board command without permission!`, {
-        //   eventType: 'rolesError',
-        //   author: interaction.member?.toString(),
-        //   requiredRole: 'Board',
-        // });
+        Logger.warn(`Member ${interaction.member?.toString()} attempted to use a Board command without permission!`, {
+          eventType: 'rolesError',
+          author: interaction.member?.toString(),
+          requiredRole: 'Board',
+        });
       });
       return false;
     }

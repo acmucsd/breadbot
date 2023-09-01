@@ -8,7 +8,7 @@ import {
 } from 'winston';
 import 'winston-daily-rotate-file';
 import { DateTime } from 'luxon';
-
+  
 const {
   printf, combine, json, timestamp, colorize,
 } = format;
@@ -41,14 +41,14 @@ export default createLogger({
         ? combine(colorize(), consoleLogFormat)
         : combine(timestamp(), json()),
     }),
-    // new Transports.DailyRotateFile({
-    //   level: 'info',
-    //   format: combine(timestamp(), json()),
-    //   filename: 'logs/BreadBot-%DATE%.log',
-    //   datePattern: 'YYYY-MM-DD',
-    //   zippedArchive: true,
-    //   maxSize: '20m',
-    //   maxFiles: '14d',
-    // }),
+    new Transports.DailyRotateFile({
+      level: 'info',
+      format: combine(timestamp(), json()),
+      filename: 'logs/BreadBot-%DATE%.log',
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d',
+    }),
   ],
 });

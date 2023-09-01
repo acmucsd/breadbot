@@ -11,13 +11,10 @@ import {
   InteractionReplyOptions,
 } from 'discord.js';
 import Command from '../Command';
-// import GoogleCalendarManager from '../managers/GoogleCalendarManager';
-// import NotionEventSyncManager from '../managers/NotionEventSyncManager';
 import Logger from '../utils/Logger';
 
 /**
  * The options for a Command.
- * Copied verbatim from BreadBot.
  *
  * Each command has specific flags and parameters used by the Client to understand execution.
  */
@@ -26,6 +23,7 @@ export interface CommandOptions {
    * The name of the Command. This translates to what will be used to call the Command.
    */
   name: string;
+
   /**
    * Whether the Command is enabled or not.
    *
@@ -33,6 +31,7 @@ export interface CommandOptions {
    * This option can only be modified before starting the Client.
    */
   enabled: boolean;
+
   /**
    * Whether the "Board" role is required when running this Command.
    *
@@ -40,10 +39,12 @@ export interface CommandOptions {
    * unable to. The incident will be logged as well.
    */
   boardRequired?: boolean;
+
   /**
    * A brief description of what the Command does.
    */
   description?: string;
+
   /**
    * Example usage of the Command.
    *
@@ -61,7 +62,7 @@ export interface CommandOptions {
    * but there are too few Commands right now.
    */
   category?: string;
-
+  
   /**
    * Required permissions to run the Command.
    *
@@ -99,7 +100,12 @@ export interface BotSettings {
    * The Discord API bot token. Needed to authenticate the bot.
    */
   token: string;
+
+  /**
+   * What the message content must contain initially to have a command invoked.
+   */
   prefix: string;
+
   paths: {
     commands: string;
     events: string;
@@ -127,9 +133,6 @@ export interface BotClient extends Client {
    * for other commands, like Help.
    */
   commands: Collection<string, Command>;
-
-  // notionEventSyncManager: NotionEventSyncManager;
-  // googleCalendarManager: GoogleCalendarManager;
 }
 
 /**
