@@ -80,6 +80,13 @@ export interface CommandOptions {
  */
 export interface BotSettings {
   /**
+   * ACMURL credentials.
+   */
+  acmurl: {
+    username: string;
+    password: string;
+  };
+  /**
    * Presence data for bot. This displays cool Rich presence for the bot, if given.
    */
   presence: PresenceData;
