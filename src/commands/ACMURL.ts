@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import {CommandInteraction, Embed, EmbedBuilder} from 'discord.js';
+import {ChatInputCommandInteraction, EmbedBuilder} from 'discord.js';
 import got from 'got';
 import { v4 as newUUID } from 'uuid';
 import Command from '../Command';
@@ -41,21 +41,16 @@ export default class ACMURL extends Command {
     );
   }
 
-  public async run(interaction: CommandInteraction): Promise<void> {
+  public async run(interaction: ChatInputCommandInteraction): Promise<void> {
     // Let's defer the reply first
     await super.defer(interaction);
     // Alright, this is the biggest command by far.
     // This might be able to be split better, but who knows?
     //
     // Get command arguments. Make description tokens all together in an array.
-    // @ts-ignore
     const shortlink = interaction.options.getString('shortlink', true);
-    // @ts-ignore
     const longlink = interaction.options.getString('longlink', true);
-    // @ts-ignore
     const description = interaction.options.getString('description');
-    console.log(shortlink, longlink, description);
-    return;
 
     // Set title of URL, or undefined if initial array did not exist.
     const linkTitle = description || `Discord Bot - ${shortlink}`; // optional argument or slashtag
@@ -170,8 +165,7 @@ export default class ACMURL extends Command {
           format: 'json',
           title,
         },
-      })
-      .json()) as any;
+    }).json()) as any;
 
     if (acmurlAPIResponse.status === 'fail') {
       throw new Error(acmurlAPIResponse.code);
