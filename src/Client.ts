@@ -68,11 +68,19 @@ export default class Client extends DiscordClient implements BotClient {
     if (!process.env.DISCORD_GUILD_ID) {
       throw new BotInitializationError('Discord Guild ID');
     }
+    if (!process.env.ACMURL_USERNAME) {
+        throw new BotInitializationError('ACMURL Username');
+      }
+      if (!process.env.ACMURL_PASSWORD) {
+        throw new BotInitializationError('ACMURL Password');
+      }
 
     this.settings.clientID = process.env.CLIENT_ID;
     this.settings.token = process.env.BOT_TOKEN;
     this.settings.prefix = process.env.BOT_PREFIX;
     this.settings.discordGuildID = process.env.DISCORD_GUILD_ID;
+    this.settings.acmurl.username = process.env.ACMURL_USERNAME;
+    this.settings.acmurl.password = process.env.ACMURL_PASSWORD;
     this.initialize().then();
   }
 

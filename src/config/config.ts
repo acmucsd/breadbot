@@ -2,6 +2,10 @@ import { BotSettings } from '../types';
 import { GatewayIntentBits } from 'discord.js';
 
 export default {
+  acmurl: {
+    username: '',
+    password: '',
+  },
   presence: {
     status: 'online',
   },
