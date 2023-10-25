@@ -62,7 +62,7 @@ export default class InteractionCreate implements BotEvent {
       command,
       author: user,
     });
-    
+
     if (!command.canRun(interaction)) {
       return;
     }

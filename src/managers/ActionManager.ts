@@ -26,7 +26,7 @@ export default class {
   /**
    * @param {BotClient} client The original client, for access to the configuration.
    * @param {string} commands The commands directory.
-   * @returns {APICommandJSON[]} An array that holds all the information necessary 
+   * @returns {APICommandJSON[]} An array that holds all the information necessary
    * to register Slash Commands on Discord's API.
    */
   private async loadCommands(client: BotClient, commands: string): Promise<APICommandJSON[]> {
@@ -34,7 +34,8 @@ export default class {
 
     const files = readdirSync(commands);
     // For every Command file...
-    await Promise.all(files.map(async (cmd) => {
+    await Promise.all(
+      files.map(async cmd => {
         // Check if it is a directory, because if it is...
         if (statSync(join(commands, cmd)).isDirectory()) {
           // Recursively deal with that, since we may want to split commands by module
@@ -43,11 +44,7 @@ export default class {
           slashCommands = slashCommands.concat(nestedCommands);
         } else {
           // Import our Command file.
-          const commandImport = await import(join(
-            __dirname,
-            '../../',
-            `${commands}/${cmd.replace('ts', 'js')}`,
-          ));
+          const commandImport = await import(join(__dirname, '../../', `${commands}/${cmd.replace('ts', 'js')}`));
 
           // Get the default export.
           const LoadedCommand = commandImport.default;
@@ -61,7 +58,8 @@ export default class {
             slashCommands.push(command.definition.toJSON());
           }
         }
-    }));
+      })
+    );
 
     return slashCommands;
   }
@@ -84,24 +82,20 @@ export default class {
       Logger.info('Loading Slash Commands on Discord Gateway...', {
         eventType: 'slashCommandLoading',
       });
-      // Make an API call for global application commands. This will allow the commands 
+      // Make an API call for global application commands. This will allow the commands
       // to be available across all the guilds where this bot is present.
-      await restAPI.put(
-        Routes.applicationCommands(client.settings.clientID),
-        { body: slashCommands }, 
-      );
-      // Adding the ID for our Discord Guild allows new slash commands to load faster 
+      await restAPI.put(Routes.applicationCommands(client.settings.clientID), { body: slashCommands });
+      // Adding the ID for our Discord Guild allows new slash commands to load faster
       // in our specified guild than adding it globally.
-      await restAPI.put(
-        Routes.applicationGuildCommands(client.settings.clientID, client.settings.discordGuildID),
-        { body: slashCommands },
-      );
+      await restAPI.put(Routes.applicationGuildCommands(client.settings.clientID, client.settings.discordGuildID), {
+        body: slashCommands,
+      });
       Logger.info('Loaded Slash Commands on Discord Gateway!', {
         eventType: 'slashCommandLoaded',
       });
     })();
   }
-  
+
   /**
    * Initializes every event from the configured event path.
    * @param {BotClient} client The original client, for access to the configuration.
@@ -115,13 +109,9 @@ export default class {
       if (err) Logger.error(err);
 
       // For every Event file...
-      files.forEach(async (evt) => {
+      files.forEach(async evt => {
         // Import our Event file.
-        const eventImport = await import(join(
-          __dirname,
-          '../../',
-          `${events}/${evt.replace('ts', 'js')}`,
-        ));
+        const eventImport = await import(join(__dirname, '../../', `${events}/${evt.replace('ts', 'js')}`));
 
         // Get the default export.
         const LoadedEvent = eventImport.default;
@@ -135,10 +125,7 @@ export default class {
         // We lowercase the first letter, since that's how events are written down in Discord.js,
         // and use the abstract `run` method we implemented in the file as the callback for our
         // event.
-        client.on(
-          eventName.charAt(0).toLowerCase() + eventName.slice(1),
-          (...args: string[]) => event.run(...args),
-        );
+        client.on(eventName.charAt(0).toLowerCase() + eventName.slice(1), (...args: string[]) => event.run(...args));
       });
     });
   }

@@ -10,18 +10,20 @@ import { BotClient } from '../types';
  */
 export default class PingTwo extends Command {
   constructor(client: BotClient) {
-    const definition = new SlashCommandBuilder()
-      .setName('pingtwo')
-      .setDescription('Pings the bot.');
+    const definition = new SlashCommandBuilder().setName('pingtwo').setDescription('Pings the bot.');
 
-    super(client, {
-      name: 'pingtwo',
-      enabled: true,
-      description: 'Pings the bot.',
-      category: 'Information',
-      usage: client.settings.prefix.concat('pingtwo'),
-      requiredPermissions: ['SendMessages'],
-    }, definition);
+    super(
+      client,
+      {
+        name: 'pingtwo',
+        enabled: true,
+        description: 'Pings the bot.',
+        category: 'Information',
+        usage: client.settings.prefix.concat('pingtwo'),
+        requiredPermissions: ['SendMessages'],
+      },
+      definition
+    );
   }
 
   public async run(interaction: CommandInteraction): Promise<void> {

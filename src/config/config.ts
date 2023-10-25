@@ -1,5 +1,5 @@
-import { BotSettings } from '../types';
 import { GatewayIntentBits } from 'discord.js';
+import { BotSettings } from '../types';
 
 export default {
   acmurl: {
