@@ -19,6 +19,7 @@ module.exports = {
     'no-unused-vars': 'off' /* because ESLint is broken, we need to disable the js version of this */,
     '@typescript-eslint/no-unused-vars': ['error'],
     'prettier/prettier': 'error',
+    'import/no-unresolved': 'off',
   },
   settings: {
     'import/resolver': {
