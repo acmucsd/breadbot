@@ -62,7 +62,7 @@ export interface CommandOptions {
    * but there are too few Commands right now.
    */
   category?: string;
-  
+
   /**
    * Required permissions to run the Command.
    *

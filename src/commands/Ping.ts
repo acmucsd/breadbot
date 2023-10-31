@@ -10,18 +10,20 @@ import { BotClient } from '../types';
  */
 export default class Ping extends Command {
   constructor(client: BotClient) {
-    const definition = new SlashCommandBuilder()
-      .setName('ping')
-      .setDescription('Pings the bot.');
+    const definition = new SlashCommandBuilder().setName('ping').setDescription('Pings the bot.');
 
-    super(client, {
-      name: 'ping',
-      enabled: true,
-      description: 'Pings the bot.',
-      category: 'Information',
-      usage: client.settings.prefix.concat('ping'),
-      requiredPermissions: ['SendMessages'],
-    }, definition);
+    super(
+      client,
+      {
+        name: 'ping',
+        enabled: true,
+        description: 'Pings the bot.',
+        category: 'Information',
+        usage: client.settings.prefix.concat('ping'),
+        requiredPermissions: ['SendMessages'],
+      },
+      definition
+    );
   }
 
   public async run(interaction: CommandInteraction): Promise<void> {

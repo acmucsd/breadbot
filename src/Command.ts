@@ -1,11 +1,6 @@
-// import { SlashCommandBuilder } from '@discordjs/builders';
-import {
-  CommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
-import {
-  BotClient, CommandOptions, InteractionPayload,
-} from './types';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { CommandInteraction } from 'discord.js';
+import { BotClient, CommandOptions, InteractionPayload } from './types';
 import Logger from './utils/Logger';
 
 /**
@@ -40,9 +35,7 @@ export default abstract class Command {
    * @param client The client receiving the Command.
    * @param options Any options to set for the Command.
    */
-  constructor(protected client: BotClient,
-    options: CommandOptions,
-    definition: SlashCommandBuilder) {
+  constructor(protected client: BotClient, options: CommandOptions, definition: SlashCommandBuilder) {
     this.conf = {
       enabled: options.enabled,
       name: options.name,
@@ -72,12 +65,10 @@ export default abstract class Command {
 
     const isBoard = Array.isArray(memberRoles)
       ? memberRoles.includes('Board')
-      : memberRoles.cache.some((r) => r.name === 'Board');
+      : memberRoles.cache.some(r => r.name === 'Board');
 
     if (this.conf.boardRequired && !isBoard) {
-      interaction.reply(
-        'You must be a Board member to use this command!',
-      ).then(() => {
+      interaction.reply('You must be a Board member to use this command!').then(() => {
         Logger.warn(`Member ${interaction.member?.toString()} attempted to use a Board command without permission!`, {
           eventType: 'rolesError',
           author: interaction.member?.toString(),

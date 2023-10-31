@@ -37,9 +37,7 @@ export default class Client extends DiscordClient implements BotClient {
    * Begins the configuration process. Initialization is done in {@link initialize initialize()}.
    * @param actionManager An ActionManager class to run. Injected by TypeDI.
    */
-  constructor(
-    private actionManager: ActionManager,
-  ) {
+  constructor(private actionManager: ActionManager) {
     super(
       configuration.clientOptions || {
         intents: [
@@ -51,7 +49,7 @@ export default class Client extends DiscordClient implements BotClient {
           GatewayIntentBits.GuildMessageReactions,
           GatewayIntentBits.DirectMessageReactions,
         ],
-      },
+      }
     );
     this.settings = configuration;
     // We absolutely need some envvars, so if they're not in our .env file, nuke the initialization.
@@ -69,11 +67,11 @@ export default class Client extends DiscordClient implements BotClient {
       throw new BotInitializationError('Discord Guild ID');
     }
     if (!process.env.ACMURL_USERNAME) {
-        throw new BotInitializationError('ACMURL Username');
-      }
-      if (!process.env.ACMURL_PASSWORD) {
-        throw new BotInitializationError('ACMURL Password');
-      }
+      throw new BotInitializationError('ACMURL Username');
+    }
+    if (!process.env.ACMURL_PASSWORD) {
+      throw new BotInitializationError('ACMURL Password');
+    }
 
     this.settings.clientID = process.env.CLIENT_ID;
     this.settings.token = process.env.BOT_TOKEN;

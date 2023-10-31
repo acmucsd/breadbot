@@ -15,7 +15,10 @@
     "lint:fix": "eslint ./ --ext .ts --fix"
   },
   "dependencies": {
-    "@discordjs/core": "^0.6.0",
+    "@discordjs/builders": "^1.6.0",
+    "@discordjs/core": "^1.0.1",
+    "@discordjs/rest": "^2.0.1",
+    "discord-api-types": "^0.37.61",
     "discord.js": "^14.11.0",
     "dotenv": "^16.3.1",
     "got": "11.8.2",
@@ -30,6 +33,15 @@
   "devDependencies": {
     "@types/got": "^9.6.12",
     "@types/luxon": "^3.3.0",
-    "@types/uuid": "^9.0.5"
+    "@types/uuid": "^9.0.5",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.7"
   }
 }

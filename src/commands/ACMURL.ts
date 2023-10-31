@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import {ChatInputCommandInteraction, EmbedBuilder} from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import got from 'got';
 import { v4 as newUUID } from 'uuid';
 import Command from '../Command';
@@ -75,7 +75,7 @@ export default class ACMURL extends Command {
         .setTitle('Set shortened link!')
         .setDescription(`Short link: ${shortURL}`)
         .setURL(shortURL)
-        .setColor(0x0000FF);
+        .setColor(0x0000ff);
       await super.edit(interaction, {
         embeds: [shortenEmbed],
       });
@@ -97,7 +97,7 @@ export default class ACMURL extends Command {
             .setTitle('Updated shortened link!')
             .setDescription(`Short link: ${newURL}\nPreviously shortened link: ${previousURL}`)
             .setURL(newURL)
-            .setColor(0x0000FF);
+            .setColor(0x0000ff);
           await super.edit(interaction, {
             embeds: [shortenEmbed],
           });
@@ -155,7 +155,8 @@ export default class ACMURL extends Command {
    * @returns The new shortened ACMURL.
    */
   private async addACMURL(shortlink: string, longlink: string, title: string): Promise<string> {
-    const acmurlAPIResponse = (await got.post('https://acmurl.com/yourls-api.php', {
+    const acmurlAPIResponse = (await got
+      .post('https://acmurl.com/yourls-api.php', {
         form: {
           username: this.client.settings.acmurl.username,
           password: this.client.settings.acmurl.password,
@@ -165,7 +166,8 @@ export default class ACMURL extends Command {
           format: 'json',
           title,
         },
-    }).json()) as any;
+      })
+      .json()) as any;
 
     if (acmurlAPIResponse.status === 'fail') {
       throw new Error(acmurlAPIResponse.code);
