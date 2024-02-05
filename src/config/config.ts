@@ -6,6 +6,11 @@ export default {
     username: '',
     password: '',
   },
+  portalAPI: {
+    url: '',
+    username: '',
+    password: '',
+  },
   presence: {
     status: 'online',
   },
