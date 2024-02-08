@@ -89,11 +89,11 @@ export interface BotSettings {
   /**
    * Membership Portal API admin account credentials.
    */
-    portalAPI: {
-      url: string;
-      username: string;
-      password: string;
-    };
+  portalAPI: {
+    url: string;
+    username: string;
+    password: string;
+  };
   /**
    * Presence data for bot. This displays cool Rich presence for the bot, if given.
    */
@@ -149,10 +149,10 @@ export interface BotClient extends Client {
    */
   commands: Collection<string, Command>;
 
-    /**
+  /**
    * The API Token to the Membership Portal API.
    */
-    apiToken: string;
+  apiToken: string;
 }
 
 /**

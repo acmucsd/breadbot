@@ -42,10 +42,10 @@ export default class Top extends Command {
           .setName('type')
           .setDescription('Type of leaderboard (All-Time, Quarterly, Yearly)')
           .addChoices(
-            {name:'Yearly', value:'Yearly'},
-            {name:'Quarterly', value:'Quarterly'},
-            {name:'All-Time', value:'All-Time'},  
-            )
+            { name: 'Yearly', value: 'Yearly' },
+            { name: 'Quarterly', value: 'Quarterly' },
+            { name: 'All-Time', value: 'All-Time' }
+          )
       )
       .setDescription('Shows the top N members on the Membership Portal leaderboard.');
     super(
@@ -172,7 +172,7 @@ export default class Top extends Command {
         // "all-time" be their capitalized versions.
         const leaderboardPageEmbed = new EmbedBuilder()
           .setTitle(`:bar_chart: ${leaderboardType} Leaderboard`)
-          .setFooter({text:'Membership Portal'})
+          .setFooter({ text: 'Membership Portal' })
           .setDescription(leaderboardPageLines.join('\n'));
         leaderboardEmbeds.push(leaderboardPageEmbed);
       });

@@ -88,7 +88,7 @@ export default class QR extends Command {
     // Make the Discord attachment for the QR code.
     const qrCodeDataUrl = await qrCode;
     const qrCodeBuffer: Buffer = Buffer.from(qrCodeDataUrl.split(',')[1], 'base64');
-    const qrCodeAttachment = new AttachmentBuilder(qrCodeBuffer, {name: 'qr.png'});
+    const qrCodeAttachment = new AttachmentBuilder(qrCodeBuffer, { name: 'qr.png' });
 
     // Add a descriptive embed to make the contents of the QR code more obvious to others.
     const embed = new EmbedBuilder()

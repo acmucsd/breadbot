@@ -1,4 +1,12 @@
-import { CommandInteraction, AttachmentBuilder, EmbedBuilder, Message, MessagePayloadOption, MessageCreateOptions, Embed } from 'discord.js';
+import {
+  CommandInteraction,
+  AttachmentBuilder,
+  EmbedBuilder,
+  Message,
+  MessagePayloadOption,
+  MessageCreateOptions,
+  Embed,
+} from 'discord.js';
 import got from 'got';
 import { DateTime, Interval } from 'luxon';
 import { v4 as newUUID } from 'uuid';
@@ -123,7 +131,7 @@ export default class Checkin extends Command {
         // What we need now is to construct the Payload to send for `checkin`.
         const embed = await Checkin.getCheckinEmbeds(todayEvents, isPublic);
         const file = await Checkin.getCheckinFiles(todayEvents, Boolean(needsSlide));
-        await author.send({embeds:[embed], files:file});
+        await author.send({ embeds: [embed], files: file });
         await super.edit(interaction, {
           content: 'Check your DM.',
           ephemeral: true,
@@ -132,7 +140,7 @@ export default class Checkin extends Command {
       } else {
         const embed = await Checkin.getCheckinEmbeds(todayEvents, Boolean(isPublic));
         const file = await Checkin.getCheckinFiles(todayEvents, Boolean(needsSlide));
-        await super.edit(interaction, {embeds:[embed], files:file});
+        await super.edit(interaction, { embeds: [embed], files: file });
       }
     } catch (e) {
       const error = e as any;
@@ -300,10 +308,7 @@ export default class Checkin extends Command {
   // No method headers should be split between two lines due to length.
   // TODO Fix this rule in ESLint, if possible.
   // eslint-disable-next-line max-len
-  private static async getCheckinEmbeds(
-    events: PortalEvent[],
-    isPublic: boolean,
-  ): Promise<EmbedBuilder> {
+  private static async getCheckinEmbeds(events: PortalEvent[], isPublic: boolean): Promise<EmbedBuilder> {
     // This method became very complicated very quickly, so we'll break this down.
     // Create arrays to store our payload contents temporarily. We'll put this in our embed
     // once we build the entire message from each event we have to build the payload for.
@@ -335,17 +340,14 @@ export default class Checkin extends Command {
 
     // Make the embed, and also set the right title, depending what kind of embed we're making.
     const embed = new EmbedBuilder()
-    .setTitle(isPublic ? ":calendar_spiral: Don't forget to check in!" : ":calendar_spiral: Today's Events")
-    .setDescription(description.join('\n'))
-    .setColor('Blue');
+      .setTitle(isPublic ? ":calendar_spiral: Don't forget to check in!" : ":calendar_spiral: Today's Events")
+      .setDescription(description.join('\n'))
+      .setColor('Blue');
     return embed;
   }
 
-  //File part
-  private static async getCheckinFiles(
-    events: PortalEvent[],
-    needsSlide: boolean
-  ): Promise<AttachmentBuilder[]> {
+  // File part
+  private static async getCheckinFiles(events: PortalEvent[], needsSlide: boolean): Promise<AttachmentBuilder[]> {
     const qrCodes: AttachmentBuilder[] = [];
 
     // For each event we are given...
@@ -366,7 +368,7 @@ export default class Checkin extends Command {
           // Discord.js. Probably because the base64 encode is enough,
           // but it was confusing the first time around.
           const qrCodeBuffer: Buffer = Buffer.from(qrCodeDataUrl.split(',')[1], 'base64');
-          const qrCodeAttachment = new AttachmentBuilder(qrCodeBuffer, {name: `checkin-${event.attendanceCode}.png`});
+          const qrCodeAttachment = new AttachmentBuilder(qrCodeBuffer, { name: `checkin-${event.attendanceCode}.png` });
           qrCodes.push(qrCodeAttachment);
         } catch (error) {
           Logger.error(error);

@@ -123,10 +123,10 @@ export default class Client extends DiscordClient implements BotClient {
     return this.actionManager.commands;
   }
 
-    /**
+  /**
    * Get the API token for the Membership Portal API.
    */
-    public get apiToken(): string {
-      return this.portalAPIManager.apiToken;
-    }
+  public get apiToken(): string {
+    return this.portalAPIManager.apiToken;
+  }
 }
