@@ -99,7 +99,6 @@ export default class Top extends Command {
       await super.edit(interaction, "I failed with arguments? That's weird.");
       return;
     }
-
     // if size given and not between 3 and 100...
     if (leaderboardSize < 3 || leaderboardSize > 100) {
       await super.edit(interaction, 'Leaderboard size should be between 3 and 100!');
@@ -164,7 +163,6 @@ export default class Top extends Command {
           }
           leaderboardPositionIndex += 1;
         });
-
         // Setup the Embed for this page of the leaderboard.
         // All of them will have the same title: the current leaderboard we're looking at.
         // Names are capitalized so it's more nice-looking, albeit making the code less readable.
@@ -179,6 +177,7 @@ export default class Top extends Command {
 
       // Once all the pages are done, generate the Pagination Embed, and only
       // allow the command caller to modify the pages using Reactions.
+      await super.edit(interaction, { embeds: leaderboardEmbeds });
       return;
     } catch (e) {
       const error = e as any;
