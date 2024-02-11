@@ -5,6 +5,7 @@ import { BotSettings, BotClient, BotInitializationError } from './types';
 import Command from './Command';
 import ActionManager from './managers/ActionManager';
 import configuration from './config/config';
+import PortalAPIManager from './managers/PortalAPIManager';
 
 /**
  * The class representing the Discord bot.
@@ -36,8 +37,9 @@ export default class Client extends DiscordClient implements BotClient {
    *
    * Begins the configuration process. Initialization is done in {@link initialize initialize()}.
    * @param actionManager An ActionManager class to run. Injected by TypeDI.
+   * @param portalAPIManager A PortalAPIManager class to run. Injected by TypeDI
    */
-  constructor(private actionManager: ActionManager) {
+  constructor(private actionManager: ActionManager, private portalAPIManager: PortalAPIManager) {
     super(
       configuration.clientOptions || {
         intents: [
@@ -66,6 +68,15 @@ export default class Client extends DiscordClient implements BotClient {
     if (!process.env.DISCORD_GUILD_ID) {
       throw new BotInitializationError('Discord Guild ID');
     }
+    if (!process.env.MEMBERSHIP_PORTAL_API_URL) {
+      throw new BotInitializationError('Membership Portal API URL');
+    }
+    if (!process.env.MEMBERSHIP_PORTAL_API_USERNAME) {
+      throw new BotInitializationError('Membership Portal API Username');
+    }
+    if (!process.env.MEMBERSHIP_PORTAL_API_PASSWORD) {
+      throw new BotInitializationError('Membership Portal API Password');
+    }
     if (!process.env.ACMURL_USERNAME) {
       throw new BotInitializationError('ACMURL Username');
     }
@@ -79,6 +90,9 @@ export default class Client extends DiscordClient implements BotClient {
     this.settings.discordGuildID = process.env.DISCORD_GUILD_ID;
     this.settings.acmurl.username = process.env.ACMURL_USERNAME;
     this.settings.acmurl.password = process.env.ACMURL_PASSWORD;
+    this.settings.portalAPI.url = process.env.MEMBERSHIP_PORTAL_API_URL;
+    this.settings.portalAPI.username = process.env.MEMBERSHIP_PORTAL_API_USERNAME;
+    this.settings.portalAPI.password = process.env.MEMBERSHIP_PORTAL_API_PASSWORD;
     this.initialize().then();
   }
 
@@ -91,6 +105,7 @@ export default class Client extends DiscordClient implements BotClient {
    */
   private async initialize(): Promise<void> {
     try {
+      this.portalAPIManager.initializeTokenHandling(this);
       this.actionManager.initializeCommands(this);
       ActionManager.initializeEvents(this);
       await this.login(configuration.token);
@@ -106,5 +121,12 @@ export default class Client extends DiscordClient implements BotClient {
    */
   public get commands(): Collection<string, Command> {
     return this.actionManager.commands;
+  }
+
+  /**
+   * Get the API token for the Membership Portal API.
+   */
+  public get apiToken(): string {
+    return this.portalAPIManager.apiToken;
   }
 }
