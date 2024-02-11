@@ -1,18 +1,10 @@
-import {
-  CommandInteraction,
-  AttachmentBuilder,
-  EmbedBuilder,
-  Message,
-  MessagePayloadOption,
-  MessageCreateOptions,
-  Embed,
-} from 'discord.js';
+import { CommandInteraction, AttachmentBuilder, EmbedBuilder } from 'discord.js';
 import got from 'got';
 import { DateTime, Interval } from 'luxon';
 import { v4 as newUUID } from 'uuid';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { createCanvas, loadImage, registerFont } from 'canvas';
-import { BotClient, InteractionPayload, PortalEvent, UUIDv4 } from '../types';
+import { BotClient, PortalEvent, UUIDv4 } from '../types';
 import Command from '../Command';
 import Logger from '../utils/Logger';
 import QR from './QR';
